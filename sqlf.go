@@ -5,17 +5,6 @@ import (
 	"io"
 )
 
-// SQLBinder is just BindVar from gorp.Dialect. It is used to take a format
-// string and convert it into query string that a gorp.SqlExecutor can use.
-type SQLBinder interface {
-	// BindVar binds a variable string to use when forming SQL statements
-	// in many dbs it is "?", but Postgres appears to use $1
-	//
-	// i is a zero based index of the bind variable in this statement
-	//
-	BindVar(i int) string
-}
-
 type SQL struct {
 	fmt  string
 	args []interface{}
@@ -40,7 +29,7 @@ func Sprintf(format string, args ...interface{}) *SQL {
 	}
 }
 
-func (e *SQL) Query(binder SQLBinder) string {
+func (e *SQL) Query(binder SQLBindVar) string {
 	a := make([]interface{}, len(e.args))
 	for i := range a {
 		a[i] = ignoreFormat{binder.BindVar(i)}

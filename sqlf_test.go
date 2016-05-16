@@ -1,18 +1,11 @@
 package sqlf_test
 
 import (
-	"fmt"
 	"reflect"
 	"testing"
 
 	"github.com/keegancsmith/sqlf"
 )
-
-type binder struct{}
-
-func (d binder) BindVar(i int) string {
-	return fmt.Sprintf("$%d", i+1)
-}
 
 func TestSprintf(t *testing.T) {
 	cases := map[string]struct {
@@ -45,7 +38,7 @@ func TestSprintf(t *testing.T) {
 	}
 	for tn, tc := range cases {
 		sql := sqlf.Sprintf(tc.Fmt, tc.FmtArgs...)
-		if got := sql.Query(binder{}); got != tc.Want {
+		if got := sql.Query(sqlf.PostgresBindVar); got != tc.Want {
 			t.Errorf("%s: expected query: %q, got: %q", tn, tc.Want, got)
 		}
 		if got := sql.Args(); !reflect.DeepEqual(got, tc.WantArgs) {
