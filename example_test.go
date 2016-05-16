@@ -9,7 +9,7 @@ import (
 )
 
 func Example() {
-	// This is an example which shows off embedding SQL, which simplifies
+	// This is an example which shows off embedding SQL, which simplifies building
 	// complicated SQL queries
 	name := "John"
 	age, offset := 27, 100
