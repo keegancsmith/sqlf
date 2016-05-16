@@ -10,11 +10,9 @@ import (
 
 var db *sql.DB
 
-// ExampleSprintf_DBQuery is the example for database/sql.Query modified to
-// use sqlf.Sprintf
 func ExampleSprintf_DBQuery() {
 	age := 27
-	// The next two lines are the only difference from the sql.Query example.
+	// The next two lines are the only difference from the dabatabase/sql/db.Query example.
 	// Original is rows, err := db.Query("SELECT name FROM users WHERE age=?", age)
 	s := sqlf.Sprintf("SELECT name FROM users WHERE age=%d", age)
 	rows, err := db.Query(s.Query(sqlf.SimpleBindVar), s.Args()...)
@@ -34,9 +32,9 @@ func ExampleSprintf_DBQuery() {
 	}
 }
 
-// ExampleSprintf is an example which shows off embedding SQL, which
-// simplifies complicated SQL queries
 func ExampleSprintf_Embed() {
+	// This is an example which shows off embedding SQL, which simplifies
+	// complicated SQL queries
 	name := "John"
 	age, offset := 27, 100
 	where := sqlf.Sprintf("name=%s AND age=%d", name, age)
