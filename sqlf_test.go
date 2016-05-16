@@ -26,24 +26,22 @@ func TestSprintf(t *testing.T) {
 			"SELECT * FROM test_table WHERE a = $1 AND b = $2", []interface{}{"foo", 1},
 		},
 
-		/*
-			"simple_embedded": {
-				"SELECT * FROM test_table WHERE a = (%s)", []interface{}{sqlf.Sprintf("SELECT b FROM b_table WHERE x = %d", 1)},
-				"SELECT * FROM test_table WHERE a = (SELECT b FROM b_table WHERE x = $1)", []interface{}{1},
-			},
+		"simple_embedded": {
+			"SELECT * FROM test_table WHERE a = (%s)", []interface{}{sqlf.Sprintf("SELECT b FROM b_table WHERE x = %d", 1)},
+			"SELECT * FROM test_table WHERE a = (SELECT b FROM b_table WHERE x = $1)", []interface{}{1},
+		},
 
-			"embedded": {
-				"SELECT * FROM test_table WHERE a = %s AND c = (%s) AND d = %s", []interface{}{"foo", sqlf.Sprintf("SELECT b FROM b_table WHERE x = %d", 1), "bar"},
-				"SELECT * FROM test_table WHERE a = $1 AND c = (SELECT b FROM b_table WHERE x = $2) AND d = $3", []interface{}{"foo", 1, "bar"},
-			},
+		"embedded": {
+			"SELECT * FROM test_table WHERE a = %s AND c = (%s) AND d = %s", []interface{}{"foo", sqlf.Sprintf("SELECT b FROM b_table WHERE x = %d", 1), "bar"},
+			"SELECT * FROM test_table WHERE a = $1 AND c = (SELECT b FROM b_table WHERE x = $2) AND d = $3", []interface{}{"foo", 1, "bar"},
+		},
 
-			"embedded_embedded": {
-				"SELECT * FROM test_table WHERE a = %s AND c = (%s) AND d = %s",
-				[]interface{}{"foo", sqlf.Sprintf("SELECT b FROM b_table WHERE x = %d AND y = (%s)", 1, sqlf.Sprintf("SELECT %s", "baz")), "bar"},
-				"SELECT * FROM test_table WHERE a = $1 AND c = (SELECT b FROM b_table WHERE x = $2 AND y = (SELECT $3)) AND d = $4",
-				[]interface{}{"foo", 1, "baz", "bar"},
-			},
-		*/
+		"embedded_embedded": {
+			"SELECT * FROM test_table WHERE a = %s AND c = (%s) AND d = %s",
+			[]interface{}{"foo", sqlf.Sprintf("SELECT b FROM b_table WHERE x = %d AND y = (%s)", 1, sqlf.Sprintf("SELECT %s", "baz")), "bar"},
+			"SELECT * FROM test_table WHERE a = $1 AND c = (SELECT b FROM b_table WHERE x = $2 AND y = (SELECT $3)) AND d = $4",
+			[]interface{}{"foo", 1, "baz", "bar"},
+		},
 	}
 	for tn, tc := range cases {
 		sql := sqlf.Sprintf(tc.Fmt, tc.FmtArgs...)

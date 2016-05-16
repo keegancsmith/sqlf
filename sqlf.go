@@ -22,8 +22,22 @@ type SQL struct {
 }
 
 // Sprintf generates a SQL struct the format arguments escaped
-func Sprintf(format string, a ...interface{}) *SQL {
-	return &SQL{format, a}
+func Sprintf(format string, args ...interface{}) *SQL {
+	f := make([]interface{}, len(args))
+	a := make([]interface{}, 0, len(args))
+	for i, arg := range args {
+		if sql, ok := arg.(*SQL); ok {
+			f[i] = ignoreFormat{sql.fmt}
+			a = append(a, sql.args...)
+		} else {
+			f[i] = ignoreFormat{"%s"}
+			a = append(a, arg)
+		}
+	}
+	return &SQL{
+		fmt:  fmt.Sprintf(format, f...),
+		args: a,
+	}
 }
 
 func (e *SQL) Query(binder SQLBinder) string {
