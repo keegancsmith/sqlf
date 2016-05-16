@@ -1,3 +1,4 @@
+// Package sqlf generates SQL statements in Go, sprintf style.
 package sqlf
 
 import (
@@ -5,6 +6,8 @@ import (
 	"io"
 )
 
+// SQL stores a SQL query and arguments for passing on to database/sql.Query
+// or gorp.SqlExecutor.
 type SQL struct {
 	fmt  string
 	args []interface{}
