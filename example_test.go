@@ -8,9 +8,23 @@ import (
 	"github.com/keegancsmith/sqlf"
 )
 
+func Example() {
+	// This is an example which shows off embedding SQL, which simplifies
+	// complicated SQL queries
+	name := "John"
+	age, offset := 27, 100
+	where := sqlf.Sprintf("name=%s AND age=%d", name, age)
+	limit := sqlf.Sprintf("%d OFFSET %d", 10, offset)
+	q := sqlf.Sprintf("SELECT name FROM users WHERE %s LIMIT %s", where, limit)
+	fmt.Println(q.Query(sqlf.PostgresBindVar))
+	fmt.Println(q.Args())
+	// Output: SELECT name FROM users WHERE name=$1 AND age=$2 LIMIT $3 OFFSET $4
+	// [John 27 10 100]
+}
+
 var db *sql.DB
 
-func ExampleSprintf_DBQuery() {
+func Example_dbquery() {
 	age := 27
 	// The next two lines are the only difference from the dabatabase/sql/db.Query example.
 	// Original is rows, err := db.Query("SELECT name FROM users WHERE age=?", age)
@@ -30,18 +44,4 @@ func ExampleSprintf_DBQuery() {
 	if err := rows.Err(); err != nil {
 		log.Fatal(err)
 	}
-}
-
-func ExampleSprintf_Embed() {
-	// This is an example which shows off embedding SQL, which simplifies
-	// complicated SQL queries
-	name := "John"
-	age, offset := 27, 100
-	where := sqlf.Sprintf("name=%s AND age=%d", name, age)
-	limit := sqlf.Sprintf("%d OFFSET %d", 10, offset)
-	q := sqlf.Sprintf("SELECT name FROM users WHERE %s LIMIT %s", where, limit)
-	fmt.Println(q.Query(sqlf.PostgresBindVar))
-	fmt.Println(q.Args())
-	// Output: SELECT name FROM users WHERE name=$1 AND age=$2 LIMIT $3 OFFSET $4
-	// [John 27 10 100]
 }
