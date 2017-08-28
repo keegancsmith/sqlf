@@ -15,7 +15,7 @@ type Query struct {
 }
 
 // Sprintf formats according to a format specifier and returns the resulting
-// SQL struct.
+// Query.
 func Sprintf(format string, args ...interface{}) *Query {
 	f := make([]interface{}, len(args))
 	a := make([]interface{}, 0, len(args))
@@ -45,7 +45,7 @@ func (q *Query) Query(binder BindVar) string {
 }
 
 // Args returns the args for use in database/sql/db.Query along with
-// SQL.Query()
+// q.Query()
 func (q *Query) Args() []interface{} {
 	return q.args
 }
