@@ -4,6 +4,7 @@ package sqlf
 import (
 	"fmt"
 	"io"
+	"strings"
 )
 
 // Query stores a SQL expression and arguments for passing on to
@@ -47,6 +48,24 @@ func (e *Query) Query(binder BindVar) string {
 // SQL.Query()
 func (e *Query) Args() []interface{} {
 	return e.args
+}
+
+// Join concatenates the elements of queries to create a single Query. The
+// separator string sep is placed between elements in the resulting Query.
+//
+// This is commonly used to join clauses in a WHERE query. As such sep is
+// usually "AND" or "OR".
+func Join(queries []*Query, sep string) *Query {
+	f := make([]string, 0, len(queries))
+	var a []interface{}
+	for _, q := range queries {
+		f = append(f, q.fmt)
+		a = append(a, q.args...)
+	}
+	return &Query{
+		fmt:  strings.Join(f, " "+sep+" "),
+		args: a,
+	}
 }
 
 type ignoreFormat struct{ s string }

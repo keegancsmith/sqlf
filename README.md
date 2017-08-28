@@ -19,6 +19,27 @@ fmt.Println(q.Args())
 // [John 27 10 100]
 ```
 
+Another common task is joining conditionals with `AND` or `OR`. sqlf
+simplifies this task with `sqlf.Join`:
+
+```go
+// Our inputs
+min_quantity := 100
+name_filters := []string{"apple", "orange", "coffee"}
+
+var conds []*sqlf.Query
+for _, filter := range name_filters {
+    conds = append(conds, sqlf.Sprintf("name LIKE %s", "%"+filter+"%"))
+}
+sub_query := sqlf.Sprintf("SELECT product_id FROM order_item WHERE quantity > %d", min_quantity)
+q := sqlf.Sprintf("SELECT name FROM product WHERE id IN (%s) AND (%s)", sub_query, sqlf.Join(conds, "OR"))
+
+fmt.Println(q.Query(sqlf.PostgresBindVar))
+fmt.Println(q.Args())
+// Output: SELECT name FROM product WHERE id IN (SELECT product_id FROM order_item WHERE quantity > $1) AND (name LIKE $2 OR name LIKE $3 OR name LIKE $4)
+// [100 %apple% %orange% %coffee%]
+```
+
 Notice that you can pass the output of `sqlf.Sprintf` as input to itself. It
 will return a flattened query string, while preserving the correct variable
 binding.
