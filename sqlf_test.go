@@ -37,11 +37,11 @@ func TestSprintf(t *testing.T) {
 		},
 	}
 	for tn, tc := range cases {
-		sql := sqlf.Sprintf(tc.Fmt, tc.FmtArgs...)
-		if got := sql.Query(sqlf.PostgresBindVar); got != tc.Want {
+		q := sqlf.Sprintf(tc.Fmt, tc.FmtArgs...)
+		if got := q.Query(sqlf.PostgresBindVar); got != tc.Want {
 			t.Errorf("%s: expected query: %q, got: %q", tn, tc.Want, got)
 		}
-		if got := sql.Args(); !reflect.DeepEqual(got, tc.WantArgs) {
+		if got := q.Args(); !reflect.DeepEqual(got, tc.WantArgs) {
 			t.Errorf("%s: expected args: %q, got: %q", tn, tc.WantArgs, got)
 		}
 	}

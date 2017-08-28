@@ -6,28 +6,28 @@ import (
 	"io"
 )
 
-// SQL stores a SQL query and arguments for passing on to
+// Query stores a SQL expression and arguments for passing on to
 // database/sql/db.Query or gorp.SqlExecutor.
-type SQL struct {
+type Query struct {
 	fmt  string
 	args []interface{}
 }
 
 // Sprintf formats according to a format specifier and returns the resulting
 // SQL struct.
-func Sprintf(format string, args ...interface{}) *SQL {
+func Sprintf(format string, args ...interface{}) *Query {
 	f := make([]interface{}, len(args))
 	a := make([]interface{}, 0, len(args))
 	for i, arg := range args {
-		if sql, ok := arg.(*SQL); ok {
-			f[i] = ignoreFormat{sql.fmt}
-			a = append(a, sql.args...)
+		if q, ok := arg.(*Query); ok {
+			f[i] = ignoreFormat{q.fmt}
+			a = append(a, q.args...)
 		} else {
 			f[i] = ignoreFormat{"%s"}
 			a = append(a, arg)
 		}
 	}
-	return &SQL{
+	return &Query{
 		fmt:  fmt.Sprintf(format, f...),
 		args: a,
 	}
@@ -35,7 +35,7 @@ func Sprintf(format string, args ...interface{}) *SQL {
 
 // Query returns a string for use in database/sql/db.Query. binder is used to
 // update the format specifiers with the relevant BindVar format
-func (e *SQL) Query(binder BindVar) string {
+func (e *Query) Query(binder BindVar) string {
 	a := make([]interface{}, len(e.args))
 	for i := range a {
 		a[i] = ignoreFormat{binder.BindVar(i)}
@@ -45,7 +45,7 @@ func (e *SQL) Query(binder BindVar) string {
 
 // Args returns the args for use in database/sql/db.Query along with
 // SQL.Query()
-func (e *SQL) Args() []interface{} {
+func (e *Query) Args() []interface{} {
 	return e.args
 }
 
