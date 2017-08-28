@@ -2,10 +2,10 @@ package sqlf
 
 import "fmt"
 
-// SQLBindVar is just BindVar from gorp.Dialect. It is used to take a format
-// string and convert it into query string that a gorp.SqlExecutor or
-// sql.Query can use
-type SQLBindVar interface {
+// BindVar is used to take a format string and convert it into query
+// string that a gorp.SqlExecutor or sql.Query can use. It is the
+// same as BindVar from gorp.Dialect.
+type BindVar interface {
 	// BindVar binds a variable string to use when forming SQL statements
 	// in many dbs it is "?", but Postgres appears to use $1
 	//

@@ -35,7 +35,7 @@ func Sprintf(format string, args ...interface{}) *SQL {
 
 // Query returns a string for use in database/sql/db.Query. binder is used to
 // update the format specifiers with the relevant BindVar format
-func (e *SQL) Query(binder SQLBindVar) string {
+func (e *SQL) Query(binder BindVar) string {
 	a := make([]interface{}, len(e.args))
 	for i := range a {
 		a[i] = ignoreFormat{binder.BindVar(i)}
