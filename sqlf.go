@@ -36,18 +36,18 @@ func Sprintf(format string, args ...interface{}) *Query {
 
 // Query returns a string for use in database/sql/db.Query. binder is used to
 // update the format specifiers with the relevant BindVar format
-func (e *Query) Query(binder BindVar) string {
-	a := make([]interface{}, len(e.args))
+func (q *Query) Query(binder BindVar) string {
+	a := make([]interface{}, len(q.args))
 	for i := range a {
 		a[i] = ignoreFormat{binder.BindVar(i)}
 	}
-	return fmt.Sprintf(e.fmt, a...)
+	return fmt.Sprintf(q.fmt, a...)
 }
 
 // Args returns the args for use in database/sql/db.Query along with
 // SQL.Query()
-func (e *Query) Args() []interface{} {
-	return e.args
+func (q *Query) Args() []interface{} {
+	return q.args
 }
 
 // Join concatenates the elements of queries to create a single Query. The
