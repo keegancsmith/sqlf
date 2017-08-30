@@ -14,7 +14,10 @@ methods for a parameterized SQL query and arguments. You then pass that to
 `db.Query`, `db.Exec`, etc. This is not like using `fmt.Sprintf`, which could
 expose you to malformed SQL or SQL injection attacks.
 
-More examples:
+`sqlf.Query` can be passed as an argument to `sqlf.Sprintf`. It will "flatten"
+the query string, while preserving the correct variable binding. This allows
+you to easily compose and build SQL queries. See the below examples to find
+out more.
 
 ```go
 // This is an example which shows off embedding SQL, which simplifies building
@@ -50,9 +53,5 @@ fmt.Println(q.Args())
 // Output: SELECT name FROM product WHERE id IN (SELECT product_id FROM order_item WHERE quantity > $1) AND (name LIKE $2 OR name LIKE $3 OR name LIKE $4)
 // [100 %apple% %orange% %coffee%]
 ```
-
-Notice that you can pass the output of `sqlf.Sprintf` as input to itself. It
-will return a flattened query string, while preserving the correct variable
-binding.
 
 See https://godoc.org/github.com/keegancsmith/sqlf for more information.

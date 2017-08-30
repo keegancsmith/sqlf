@@ -10,8 +10,10 @@
 // db.Query, db.Exec, etc. This is not like using fmt.Sprintf, which could
 // expose you to malformed SQL or SQL injection attacks.
 //
-// sqlf.Query can be passed as an argument to sqlf.Sprintf. This allows you to
-// easily compose and build SQL queries. See the examples to find out more.
+// sqlf.Query can be passed as an argument to sqlf.Sprintf. It will "flatten"
+// the query string, while preserving the correct variable binding. This
+// allows you to easily compose and build SQL queries. See the below examples
+// to find out more.
 package sqlf
 
 import (
