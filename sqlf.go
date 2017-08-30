@@ -1,4 +1,17 @@
-// Package sqlf generates SQL statements in Go, sprintf style.
+// Package sqlf generates parameterized SQL statements in Go, sprintf style.
+//
+// A simple example:
+//
+//   q := sqlf.Sprintf("SELECT * FROM users WHERE country = %s AND age > %d", "US", 27);
+//   rows, err := db.Query(q.Query(), q.Args()...) // db is a database/sql.DB
+//
+// sqlf.Sprintf does not return a string. It returns *sqlf.Query which has
+// methods for a parameterized SQL query and arguments. You then pass that to
+// db.Query, db.Exec, etc. This is not like using fmt.Sprintf, which could
+// expose you to malformed SQL or SQL injection attacks.
+//
+// sqlf.Query can be passed as an argument to sqlf.Sprintf. This allows you to
+// easily compose and build SQL queries. See the examples to find out more.
 package sqlf
 
 import (
