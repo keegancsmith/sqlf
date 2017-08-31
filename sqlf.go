@@ -3,7 +3,7 @@
 // A simple example:
 //
 //   q := sqlf.Sprintf("SELECT * FROM users WHERE country = %s AND age > %d", "US", 27);
-//   rows, err := db.Query(q.Query(), q.Args()...) // db is a database/sql.DB
+//   rows, err := db.Query(q.Query(sqlf.SimpleBindVar), q.Args()...) // db is a database/sql.DB
 //
 // sqlf.Sprintf does not return a string. It returns *sqlf.Query which has
 // methods for a parameterized SQL query and arguments. You then pass that to

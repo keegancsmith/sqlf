@@ -4,9 +4,8 @@ sqlf [![Build Status](https://travis-ci.org/keegancsmith/sqlf.svg?branch=master)
 Generate parameterized SQL statements in Go, sprintf Style.
 
 ```go
-q := sqlf.Sprintf("SELECT * FROM users WHERE country = %s AND age > %d", "US",
-27);
-rows, err := db.Query(q.Query(), q.Args()...) // db is a database/sql.DB
+q := sqlf.Sprintf("SELECT * FROM users WHERE country = %s AND age > %d", "US", 27);
+rows, err := db.Query(q.Query(sqlf.SimpleBindVar), q.Args()...) // db is a database/sql.DB
 ```
 
 `sqlf.Sprintf` does not return a string. It returns `*sqlf.Query` which has
