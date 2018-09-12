@@ -14,8 +14,13 @@ type BindVar interface {
 	BindVar(i int) string
 }
 
-// SimpleBindVar is the BindVar format used by SQLite, MySQL, SQLServer
+// SimpleBindVar is the BindVar format used by SQLite, MySQL, SQLServer(mssql driver)
 var SimpleBindVar = simpleBindVar{}
+
+// SQLServerBindVar is the BindVar format used by SQL Server(sqlserver driver)
+// https://github.com/denisenkom/go-mssqldb#parameters
+// https://github.com/denisenkom/go-mssqldb#deprecated
+var SQLServerBindVar = sqlServerBindVar{}
 
 // PostgresBindVar is the BindVar format used by PostgreSQL
 var PostgresBindVar = postgresBindVar{}
@@ -35,6 +40,13 @@ type postgresBindVar struct{}
 // Returns "$(i+1)"
 func (d postgresBindVar) BindVar(i int) string {
 	return fmt.Sprintf("$%d", i+1)
+}
+
+type sqlServerBindVar struct{}
+
+// Returns "@p(i+1)"
+func (d sqlServerBindVar) BindVar(i int) string {
+	return fmt.Sprintf("@p%d", i+1)
 }
 
 type oracleBindVar struct{}
