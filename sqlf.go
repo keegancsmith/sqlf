@@ -43,6 +43,11 @@ func Sprintf(format string, args ...interface{}) *Query {
 			a = append(a, arg)
 		}
 	}
+	// The format string below goes through fmt.Sprintf, which would reduce `%%` (a literal `%`
+	// according to fmt format specifier semantics), but it would also go through fmt.Sprintf
+	// again at Query.Query(binder) time - so we need to make sure `%%` remains as `%%` in our
+	// format string. See the literal_percent_operator test.
+	format = strings.Replace(format, "%%", "%%%%", -1)
 	return &Query{
 		fmt:  fmt.Sprintf(format, f...),
 		args: a,

@@ -38,7 +38,7 @@ func TestSprintf(t *testing.T) {
 
 		"literal_percent_operator": {
 			"SELECT * FROM test_table WHERE a <<%% %s AND b = %d", []interface{}{"foo", 1},
-			"SELECT * FROM test_table WHERE a <<%s AND b = $1%!(EXTRA sqlf.ignoreFormat=$2)", []interface{}{"foo", 1},
+			"SELECT * FROM test_table WHERE a <<% $1 AND b = $2", []interface{}{"foo", 1},
 		},
 	}
 	for tn, tc := range cases {
