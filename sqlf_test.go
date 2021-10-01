@@ -35,6 +35,11 @@ func TestSprintf(t *testing.T) {
 			"SELECT * FROM test_table WHERE a = $1 AND c = (SELECT b FROM b_table WHERE x = $2 AND y = (SELECT $3)) AND d = $4",
 			[]interface{}{"foo", 1, "baz", "bar"},
 		},
+
+		"literal_percent_operator": {
+			"SELECT * FROM test_table WHERE a <<%% %s AND b = %d", []interface{}{"foo", 1},
+			"SELECT * FROM test_table WHERE a <<% $1 AND b = $2", []interface{}{"foo", 1},
+		},
 	}
 	for tn, tc := range cases {
 		q := sqlf.Sprintf(tc.Fmt, tc.FmtArgs...)
