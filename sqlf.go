@@ -20,6 +20,8 @@ import (
 	"fmt"
 	"io"
 	"strings"
+
+	"github.com/lib/pq"
 )
 
 // Query stores a SQL expression and arguments for passing on to
@@ -68,6 +70,52 @@ func (q *Query) Query(binder BindVar) string {
 // q.Query()
 func (q *Query) Args() []interface{} {
 	return q.args
+}
+
+// Render returns a string that can be executed directly as a SQL query.
+func (q *Query) Rneder(binder BindVar) (string, error) {
+	s := q.Query(binder)
+	for i, arg := range q.Args() {
+		argString, err := argToString(arg)
+		if err != nil {
+			return "", err
+		}
+
+		// TODO there's a bug where if the arg contains valid binders,
+		// they too will be unintentionally replaced by subsequent arguments.
+
+		// TODO support other BindVars such as `?`.
+
+		// TODO there must be a better way to do this, perhaps using `q.fmt`.
+		s = strings.ReplaceAll(s, fmt.Sprintf("$%d", i+1), argString)
+	}
+	return s, nil
+}
+
+func argToString(arg interface{}) (string, error) {
+	switch arg := arg.(type) {
+	case string:
+		return fmt.Sprintf("'%s'", escapeQuotes(arg)), nil
+	case *pq.StringArray:
+		value, err := arg.Value()
+		if err != nil {
+			return "", err
+		}
+		switch value := value.(type) {
+		case string:
+			return fmt.Sprintf("'%s'", escapeQuotes(value)), nil
+		default:
+			return "", fmt.Errorf("unrecognized array element type %T", value)
+		}
+	case int:
+		return fmt.Sprintf("%d", arg), nil
+	default:
+		return "", fmt.Errorf("unrecognized type %T", arg)
+	}
+}
+
+func escapeQuotes(s string) string {
+	return strings.ReplaceAll(s, "'", "''")
 }
 
 // Join concatenates the elements of queries to create a single Query. The
