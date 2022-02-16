@@ -73,7 +73,7 @@ func (q *Query) Args() []interface{} {
 }
 
 // Render returns a string that can be executed directly as a SQL query.
-func (q *Query) Rneder(binder BindVar) (string, error) {
+func (q *Query) Render(binder BindVar) (string, error) {
 	s := q.Query(binder)
 	for i, arg := range q.Args() {
 		argString, err := argToString(arg)
