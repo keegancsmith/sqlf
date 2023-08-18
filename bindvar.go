@@ -1,6 +1,8 @@
 package sqlf
 
-import "fmt"
+import (
+	"strconv"
+)
 
 // BindVar is used to take a format string and convert it into query
 // string that a gorp.SqlExecutor or sql.Query can use. It is the
@@ -39,19 +41,19 @@ type postgresBindVar struct{}
 
 // Returns "$(i+1)"
 func (d postgresBindVar) BindVar(i int) string {
-	return fmt.Sprintf("$%d", i+1)
+	return "$" + strconv.Itoa(i+1)
 }
 
 type sqlServerBindVar struct{}
 
 // Returns "@p(i+1)"
 func (d sqlServerBindVar) BindVar(i int) string {
-	return fmt.Sprintf("@p%d", i+1)
+	return "@p" + strconv.Itoa(i+1)
 }
 
 type oracleBindVar struct{}
 
 // Returns ":(i+1)"
 func (d oracleBindVar) BindVar(i int) string {
-	return fmt.Sprintf(":%d", i+1)
+	return ":" + strconv.Itoa(i+1)
 }

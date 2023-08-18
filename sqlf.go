@@ -2,8 +2,8 @@
 //
 // A simple example:
 //
-//   q := sqlf.Sprintf("SELECT * FROM users WHERE country = %s AND age > %d", "US", 27);
-//   rows, err := db.Query(q.Query(sqlf.SimpleBindVar), q.Args()...) // db is a database/sql.DB
+//	q := sqlf.Sprintf("SELECT * FROM users WHERE country = %s AND age > %d", "US", 27);
+//	rows, err := db.Query(q.Query(sqlf.SimpleBindVar), q.Args()...) // db is a database/sql.DB
 //
 // sqlf.Sprintf does not return a string. It returns *sqlf.Query which has
 // methods for a parameterized SQL query and arguments. You then pass that to
@@ -47,7 +47,7 @@ func Sprintf(format string, args ...interface{}) *Query {
 	// according to fmt format specifier semantics), but it would also go through fmt.Sprintf
 	// again at Query.Query(binder) time - so we need to make sure `%%` remains as `%%` in our
 	// format string. See the literal_percent_operator test.
-	format = strings.Replace(format, "%%", "%%%%", -1)
+	format = strings.ReplaceAll(format, "%%", "%%%%")
 	return &Query{
 		fmt:  fmt.Sprintf(format, f...),
 		args: a,
