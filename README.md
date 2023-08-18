@@ -37,15 +37,15 @@ simplifies this task with `sqlf.Join`:
 
 ```go
 // Our inputs
-min_quantity := 100
-name_filters := []string{"apple", "orange", "coffee"}
+minQuantity := 100
+nameFilters := []string{"apple", "orange", "coffee"}
 
 var conds []*sqlf.Query
-for _, filter := range name_filters {
-    conds = append(conds, sqlf.Sprintf("name LIKE %s", "%"+filter+"%"))
+for _, filter := range nameFilters {
+	conds = append(conds, sqlf.Sprintf("name LIKE %s", "%"+filter+"%"))
 }
-sub_query := sqlf.Sprintf("SELECT product_id FROM order_item WHERE quantity > %d", min_quantity)
-q := sqlf.Sprintf("SELECT name FROM product WHERE id IN (%s) AND (%s)", sub_query, sqlf.Join(conds, "OR"))
+subQuery := sqlf.Sprintf("SELECT product_id FROM order_item WHERE quantity > %d", minQuantity)
+q := sqlf.Sprintf("SELECT name FROM product WHERE id IN (%s) AND (%s)", subQuery, sqlf.Join(conds, "OR"))
 
 fmt.Println(q.Query(sqlf.PostgresBindVar))
 fmt.Println(q.Args())
